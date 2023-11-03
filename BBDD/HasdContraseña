@@ -1,0 +1,9 @@
+ $_POST["passwd"] = $contraseña;
+            function comprobar_contraseña( $contraseña){
+                $salt = "patata";
+                $saltContraseña = $contraseña.$salt;
+                $hasdedContraseña = password_hash($saltContraseña,PASSWORD_BCRYPT);
+            
+                return $hasdedContraseña;
+            
+            }
