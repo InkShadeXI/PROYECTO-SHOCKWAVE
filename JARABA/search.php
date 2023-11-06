@@ -20,15 +20,15 @@ function buscarUsuario(){
 
 try{
 $resultBusqueda = buscarUsuario();
-$_SESSION["busqueda"] = $resultBusqueda;
 if (count($resultBusqueda) > 0) {
-    foreach ($_SESSION["busqueda"] as $usuario) {
-        if(!empty($usuario)){
-         
-         
-                echo $usuario . "<br>";
-            
-                    }
+    foreach ($resultBusqueda as $usuario) {
+       
+        if($usuario != $usuarioanterior){
+            $usuarioanterior = $usuario;
+            echo $usuario . "<br>";
+        }else{
+            echo"se repite usuario";
+        }
     }
 } else {
     echo "No users found.";
@@ -39,3 +39,15 @@ if (count($resultBusqueda) > 0) {
     }
 
 ?>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    </form>
+</body>
+</html> -->
