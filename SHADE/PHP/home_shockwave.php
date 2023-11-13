@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="CSS/home_shockwave_css.css">
+    <link rel="stylesheet" href="CSS/home_shockwave.css">
+    <!-- Importación de fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 </head>
 <body>
     <?php
@@ -31,6 +35,9 @@
             
             // Esta consulta la usaremos en el foreach para buscar la información de cada usuario de los posts, para mostrar el nombre y otra información.
             $busqueda_usuario = $bd->prepare("SELECT * FROM USUARIO WHERE ID_USUARIO = ?");
+
+            //Esta consulta la usaremos para sacar los comentarios del post en cuestión.
+            $busqueda_comentario = $bd->prepare("SELECT * FROM COMENTARIO WHERE ID_COMENTARIO_POST = ?");
         
             // Este será el bucle que vaya mostrando todos los posts según la consulta (la que tiene mucho texto) haya recopilado.
             foreach ($seleccion_final as $resultado) {
@@ -38,27 +45,34 @@
                 $id_usuario = $resultado['ID_USUARIO_POST']; // El id del usuario del autor del post.
                 $busqueda_usuario->execute(array($id_usuario)); // Aquí usamos el id del usuario para recoger la información del usuario que publicó el post y así acceder a su nombre
                 $usuario = $busqueda_usuario->fetch(PDO::FETCH_ASSOC); // Le hacemos el fetch para finalizar la consulta.
+
+                $busqueda_comentario->execute(array($id_post)); // Buscamos los comentarios del post.
         
                 // Verificar si el usuario existe antes de mostrar los datos:
                 if (isset($usuario['NOMBRE_USUARIO'])) {
-                    echo "<h2>", $usuario['NOMBRE_USUARIO'], " ha publicado:</h2>";
+                    echo "<h2 class='titulo_usuario'>", $usuario['NOMBRE_USUARIO'], " ha publicado:</h2>";
                 }
         
                 // Verificar si el campo 'texto_post' existe antes de mostrarlo:
                 if (isset($resultado['TEXTO_POST'])) {
-                    echo "<p>", $resultado['TEXTO_POST'], "</p>";
+                    echo "<p class='texto_post'>", $resultado['TEXTO_POST'], "</p>";
                 }
 
                 //Verificar si existe una foto para agregarla al post:
                 if (isset($resultado['TITULO_FOTO'])) {
-                    echo '<img src="', $resultado['TITULO_FOTO'], '"/>';
+                    echo '<img class="foto_post" src="', $resultado['TITULO_FOTO'], '"/>';
                 }
+
+                // Verificar si existen comentarios, y si es así guardarlos en una variable.
+                $num_comentarios = $busqueda_comentario->rowCount();
 
                 // Aquí generamos la información de likes y disslikes
                 echo "<p color='green' class='texto_likes'>" . $resultado['NUM_LIKES'] . "</p>";
-                echo "<button id='like_button'><a href='procesar_like.php?action=like&post_id=$id_post'>Me gusta</a></button>";
-                echo "<p color='red' class='texto_likes'>" . $resultado['NUM_DISSLIKES'] . "</p>";
-                echo "<button id='like_button'><a href='procesar_like.php?action=disslike&post_id=$id_post'>No me gusta</a></button>";
+                echo "<button id='like_button'><a href='procesar_like.php?action=like&post_id=$id_post'><img class='icons' src='IMG/ICONS/like.png'/></a></button>";
+                echo "<p color='red' class='texto_disslikes'>" . $resultado['NUM_DISSLIKES'] . "</p>";
+                echo "<button id='like_button'><a href='procesar_like.php?action=disslike&post_id=$id_post'><img class='icons' src='IMG/ICONS/disslike.png'/></a></button>";
+                echo "<p color='red' class='texto_comentarios'>" . $num_comentarios . "</p>";
+                echo "<button id='like_button'><a href='procesar_like.php?action=disslike&post_id=$id_post'><img class='icons' src='IMG/ICONS/comentario.png'/></a></button>";
                 echo "<hr>";
             }
         } catch (PDOException $e) {
