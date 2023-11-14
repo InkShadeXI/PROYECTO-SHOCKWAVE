@@ -43,5 +43,11 @@
                 case 3:
                     echo "<div class='error'>Contraseña no introducida</div>";
                     break;
+                case 4:
+                    echo "<div class='error'>El nombre de usuario ya esta en uso</div>";
+                    break;
             }
         }
+    ?>
+</body>
+</html>
