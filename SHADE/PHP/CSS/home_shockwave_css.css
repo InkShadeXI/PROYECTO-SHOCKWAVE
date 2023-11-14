@@ -1,0 +1,45 @@
+body {
+    background-color: rgb(209, 209, 209);
+}
+
+.titulo_usuario {
+    font-size: 26px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.icons {
+    width: 20px;
+    height: 20px;
+}
+
+.texto_likes, .texto_disslikes, .texto_comentarios, .titulo_usuario, .texto_post {
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+.texto_likes, .texto_disslikes, .texto_comentarios {
+    display: inline-block;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.texto_likes {
+    color: rgb(0, 236, 253);
+}
+
+.texto_disslikes {
+    color: rgb(255, 33, 33);
+}
+
+.texto_comentarios {
+    color: rgb(0, 158, 79);
+}
+
+.texto_post {
+    font-family: sans-serif;
+}
+
+.publicacion_usuario {
+    border: 1px solid black;
+    border-radius: 20px;
+    background-image: linear-gradient(45deg, rgb(240, 255, 255), rgb(173, 216, 230), rgb(182, 0, 182), rgb(126, 255, 126));
+}
