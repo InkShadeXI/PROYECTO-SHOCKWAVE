@@ -26,6 +26,7 @@ if(!isset($_SESSION['usuario'])){
             <li><p class='p_cabecera'>Usuario:  ".$_SESSION['usuario']['nombre_usuario']."</p></li>
             <li><a href=home_shockwave.php>Home</a></li>
             <li><a href=perfil.php>Perfil</a> </li>
+            <li><a href=publicar.php>Publicar</a> </li>
             <li><input type='text' id='buscador' placeholder='Indica usuario a buscar...'></li<>
             <li><a href=logout.php>Cerrar sesión</a></li>
             </ul>";
