@@ -1,53 +1,44 @@
 <?php
-
-function buscarUsuario(){    
- //   $search = $_POST['busqueda'];
-    $cadena_conexion = 'mysql:dbname=redsocial;host=127.0.0.1';
-    $base = 'root';
-    $clave = '';
-    $bd = new PDO($cadena_conexion, $base, $clave);
-    $ins = "select nombre_usuario from usuario where nombre_usuario LIKE '%U%'";
-
-    $resul = $bd->query($ins);
-    if($resul->rowCount() >= 1){		
-        return $resul->fetch();		
-    }else{
-        return FALSE;
-    }
-
-}
-
-
-try{
-$resultBusqueda = buscarUsuario();
-if (count($resultBusqueda) > 0) {
-    foreach ($resultBusqueda as $usuario) {
-       
-        if($usuario != $usuarioanterior){
-            $usuarioanterior = $usuario;
-            echo $usuario . "<br>";
-        }else{
-            echo"se repite usuario";
-        }
-    }
-} else {
-    echo "No users found.";
-}
-
-}catch (PDOException $e) {
-    echo 'Error con la base de datos: ' . $e->getMessage();
-    }
-
-?>
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+function buscarUsuario() {
+    if(isset( $_POST['busqueda'])){
+        $search = $_POST['busqueda'];
+        if(empty( $_POST['busqueda'])){
+        
+        } else{
+        $cadena_conexion = 'mysql:dbname=redsocial;host=127.0.0.1';
+        $base = 'root';
+        $clave = '';
+        $bd = new PDO($cadena_conexion, $base, $clave);
     
-    </form>
-</body>
-</html> -->
+          
+      
+            $stmt = $bd->prepare("SELECT nombre_usuario  FROM usuario WHERE nombre_usuario LIKE :search OR correo_usuario = :searchcorr");
+            $stmt->bindValue(':search', '%' . $search . '%');
+            $stmt->bindValue(':searchcorr', $search);
+            $stmt->execute();
+    
+            if ($stmt->rowCount() >= 1) {
+                return $stmt->fetchAll();
+            } else {
+                return FALSE;
+             }
+          }
+       }
+}
+try {
+    $resultBusqueda = buscarUsuario();
+
+    if ($resultBusqueda == false) {
+       
+    } else if(count($resultBusqueda) <= 0){
+       echo "no existen usuarios";
+        }else if(count($resultBusqueda) > 0){
+            foreach ($resultBusqueda as $usuario) {
+                echo "<a href= perfil.php?usu = ".$usuario['nombre_usuario'].">". $usuario['nombre_usuario'] . "</a><br>"; 
+             }
+       
+    }
+} catch (PDOException $e) {
+    echo 'Error en la base de datos: ' . $e->getMessage();
+}
+?>
