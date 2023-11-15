@@ -34,7 +34,7 @@ try {
        echo "no existen usuarios";
         }else if(count($resultBusqueda) > 0){
             foreach ($resultBusqueda as $usuario) {
-                echo "<a href= perfil.php?usu = ".$usuario['nombre_usuario'].">". $usuario['nombre_usuario'] . "</a><br>"; 
+               $busq =   $usuario['nombre_usuario'] . "<br>"; 
              }
        
     }
