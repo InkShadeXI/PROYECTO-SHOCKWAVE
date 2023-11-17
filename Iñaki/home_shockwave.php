@@ -10,7 +10,7 @@
     <?php
     require "cabecera.php";
     if (isset($_SESSION['usuario'])) {
-        echo "<a href='usuario.php'>Ir a tu perfil</a>";
+        echo "<a href='perfil.php'>Ir a tu perfil</a>";
 
         $cadena_conexion = 'mysql:dbname=redsocial;host=127.0.0.1';
         $base = 'root';
