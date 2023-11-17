@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             session_start();
 		$_SESSION['usuario'] = $usu;
         }else{
-            header("Location: principal.php");
+            header("Location: home_shockwave.php");
             session_start();
             $_SESSION['usuario'] = $usu;
        }
@@ -62,7 +62,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Document</title>
 </head>
 <style>
-  
+  div{
+    width: 300px;
+    height: 300px;
+    text-align: center;
+    margin: 5% auto;
+    display: block;
+    border: 3px solid #669900;
+    box-shadow: 2px 2px #669900;
+    background-color: black;
+    padding: 20px;
+    color: #669900;
+    border-radius: 3px;
+  }
+  form{
+    display: flex;
+    flex-direction: column;
+  }
+  input{
+    margin-bottom: 30px;
+  }
+  img{
+    width: 200px;
+    height: 100px;
+    margin-left: 50px;
+    margin-top: -25px;
+  }
+  h1{
+    color: #669900;
+    text-align: center;
+    margin: 2% auto;
+    padding: 0;
+    text-shadow: 2px 2px 4px #669900;
+  }
+  html{
+    background-image: url(img/fondo.jpg);
+    background-size: cover;
+  }
+  p{
+    color: #669900;
+    text-align: center;
+    font-weight: bold;
+    font-size: x-large;
+  }
 </style>
 <body>
 <?php if(isset($_GET["redirigido"])){
@@ -71,14 +113,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<?php if(isset($err) and $err == true){
 			echo "<p> Revise usuario y contraseña</p>";
 		}?>
+    <h1>SHOCKWAVE</h1>
+    <div>   
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-Nombre del Usuario<input type="text" name="nombre" id="nombre"><br>
-Contraseña del Usuario<input type="password" name="contraseña" id="contraseña"><br>
-<input type="submit" value="Iniciar Sesion">
+        Nombre del Usuario: <input type="text" name="nombre" id="nombre"><br>
+        Contraseña del Usuario: <input type="password" name="contraseña" id="contraseña">
+    <input type="submit" value="Iniciar Sesion">
+        </form>
+    <form action="registro_usuario.php" method="post">
+        <input type="submit" value="Registrarse">
+        <img src="img/logo.jpg">
     </form>
-<form action="registro_usuario.php" method="post">
-    <input type="submit" value="Registrarse">
-</form>
-    
+</div> 
 </body>
 </html>
