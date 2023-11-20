@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="CSS/home_shockwave_css.css">
+    <link rel="stylesheet" href="CSS/home_shockwave.css">
     <!-- Importación de fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,11 +33,14 @@
             // El usuario que buscamos
             $seleccion_usuario = $_SESSION['usuario']['nombre_usuario']; 
 
-            // Esta consulta devuelve todos los posts de los amigos del usuario de arriba.
+            // Esta consulta devuelve todos los posts de los amigos del usuario de arriba, los suyos propios y solo los que tienen menos de semana de antiguedad.
             $seleccion_posts = "SELECT * FROM POST_USUARIO WHERE ID_USUARIO_POST IN (
                 SELECT DISTINCT ID_USUARIO_1 FROM AMISTAD WHERE ID_USUARIO_2 = (SELECT ID_USUARIO FROM USUARIO WHERE NOMBRE_USUARIO = '$seleccion_usuario') 
                 UNION
-                SELECT ID_USUARIO_2 FROM AMISTAD WHERE ID_USUARIO_1 = (SELECT ID_USUARIO FROM USUARIO WHERE NOMBRE_USUARIO = '$seleccion_usuario'));"; 
+                SELECT ID_USUARIO_2 FROM AMISTAD WHERE ID_USUARIO_1 = (SELECT ID_USUARIO FROM USUARIO WHERE NOMBRE_USUARIO = '$seleccion_usuario')
+                UNION
+                SELECT ID_USUARIO FROM USUARIO WHERE NOMBRE_USUARIO = '$seleccion_usuario')
+                AND FECHA_CREACION >= DATE_SUB(NOW(), INTERVAL 1 WEEK)"; 
             $seleccion_final = $bd->query($seleccion_posts);
             
             // Esta consulta la usaremos en el foreach para buscar la información de cada usuario de los posts, para mostrar el nombre y otra información.
@@ -58,7 +61,7 @@
                 // Verificar si el usuario existe antes de mostrar los datos:
                 echo "<div class='publicacion_usuario'>";
                 if (isset($usuario['NOMBRE_USUARIO'])) {
-                    echo "<h2 class='titulo_usuario'>", $usuario['NOMBRE_USUARIO'], " ha publicado:</h2>";
+                    echo "<h2 class='titulo_usuario'><a href='perfil.php'>", $usuario['NOMBRE_USUARIO'], "</a> ha publicado:</h2>";
                 }
         
                 // Verificar si el campo 'texto_post' existe antes de mostrarlo:
@@ -68,7 +71,7 @@
 
                 //Verificar si existe una foto para agregarla al post:
                 if (isset($resultado['TITULO_FOTO'])) {
-                    echo '<img class="foto_post" src="', $resultado['TITULO_FOTO'], '"/>';
+                    echo '<img class="foto_post" src="', "IMG/USUARIOS/" . $usuario['NOMBRE_USUARIO'] . "/" . $resultado['TITULO_FOTO'], '"/><br>';
                 }
 
                 // Verificar si existen comentarios, y si es así guardarlos en una variable.
