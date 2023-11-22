@@ -82,9 +82,10 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
         $hasdedpasswd = password_hash($saltpasswd,PASSWORD_BCRYPT);
         return $hasdedpasswd; 
     }
-      $ins = "INSERT INTO usuario (`NOMBRE_USUARIO`, `CORREO_USUARIO`, `CONTRASENA_USUARIO`, `USUARIO_ADMIN`) VALUES ('$nombre','$correo','".comprobar_contraseña($passwd)."',1)";
+      $ins = "INSERT INTO usuario (`NOMBRE_USUARIO`, `CORREO_USUARIO`, `CONTRASENA_USUARIO`, `USUARIO_ADMIN`) VALUES ('$nombre','$correo','".comprobar_contraseña($passwd)."',0)";
 
       $resul = $bd->query($ins);
+      mkdir("usuarios/".$nombre);
     if($resul->rowCount() === 1){		
         return $resul->fetch();		
     }else{
