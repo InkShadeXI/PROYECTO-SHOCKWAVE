@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 
                     // Directorio donde se guardará la foto
                     $nombre_usuario = $_SESSION['usuario']['nombre_usuario'];
-                    $directorio_destino = "IMG/USUARIOS/{$nombre_usuario}/";
+                    $directorio_destino = "USUARIOS/{$nombre_usuario}/";
                 
                     // Verificar si el directorio existe, si no, crearlo
                     if (!file_exists($directorio_destino)) {
