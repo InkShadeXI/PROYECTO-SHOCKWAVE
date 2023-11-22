@@ -4,6 +4,10 @@
 <html>
 <head>
 <style>
+  html{
+    background-image: url(img/fondo.jpg);
+    background-size: cover;
+  }
 ul {
   list-style-type: none;
   margin: 0;
@@ -37,12 +41,6 @@ p{
 li a:hover:active {
   background-color: #04AA6D;
 }
-body{
-  background-image: url("logo.jpg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-attachment: fixed;
-}
 #buscador{
   background-color: gainsboro;
   margin-top: 13px;
@@ -70,8 +68,8 @@ if(!isset($_SESSION['usuario'])){
             <ul>
             <li><p>Usuario:  ".$_SESSION['usuario']['nombre_usuario']."</p></li>
             <li><a href=home_shockwave.php>Home</a></li>
-            <li><a href=perdil.php>Perfil</a> </li>
-            <li><input type='text' id='buscador' placeholder='Indica usuario a buscar...'></li<>
+            <li><a href=perfil.php>Perfil</a> </li>
+            <li><form action='buscador.php' method='POST'><input type='text' id='buscador' name='buscador' placeholder='Indica usuario a buscar...'></form></li<>
             <li><a href=logout.php>Cerrar sesión</a></li>
             </ul>";
         }
