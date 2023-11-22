@@ -71,7 +71,7 @@
 
                 //Verificar si existe una foto para agregarla al post:
                 if (isset($resultado['TITULO_FOTO'])) {
-                    echo '<img class="foto_post" src="', "IMG/USUARIOS/" . $usuario['NOMBRE_USUARIO'] . "/" . $resultado['TITULO_FOTO'], '"/><br>';
+                    echo '<img class="foto_post" src="', "USUARIOS/" . $usuario['NOMBRE_USUARIO'] . "/" . $resultado['TITULO_FOTO'], '"/><br>';
                 }
 
                 // Verificar si existen comentarios, y si es así guardarlos en una variable.
