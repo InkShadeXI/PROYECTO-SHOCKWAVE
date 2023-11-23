@@ -1,9 +1,8 @@
 <?php 
 require 'cabecera.php'; 
-$cadena_conexion = 'mysql:dbname=redsocial;host=127.0.0.1';
-$base = 'root';
-$clave = '';
-$bd = new PDO($cadena_conexion, $base, $clave); 
+require 'config.php';
+$res = leer_config(dirname(__FILE__)."/configuracion.json", dirname(__FILE__)."/configuracion.json");
+	$bd = new PDO($res[0], $res[1], $res[2]);
 
 if(isset($_POST['aceptar']) && $_POST['aceptar']==true){
     $soli_upd = "UPDATE  `amistad` SET Aceptado=1 WHERE Aceptado=0 AND id_usuario_2 = ".$_SESSION['usuario']["id_usuario"]."";
@@ -17,10 +16,8 @@ if(isset($_POST['aceptar']) && $_POST['aceptar']==true){
     }
 
 function Pendientes() {
-    $cadena_conexion = 'mysql:dbname=redsocial;host=127.0.0.1';
-    $base = 'root';
-    $clave = '';
-    $bd = new PDO($cadena_conexion, $base, $clave); 
+    $res = leer_config(dirname(__FILE__)."/configuracion.json", dirname(__FILE__)."/configuracion.json");
+	$bd = new PDO($res[0], $res[1], $res[2]);
 
   $solic_nom = " SELECT usuario.nombre_usuario
 FROM usuario
@@ -35,7 +32,19 @@ $pendi_nom = $bd->query($solic_nom);
 } else {
     return FALSE;
  }
+
+ $solic_nom = " SELECT usuario.nombre_usuario
+FROM usuario
+JOIN amistad ON amistad.id_usuario_1 = usuario.id_usuario
+WHERE amistad.id_usuario_1 = ".$_SESSION['usuario']["id_usuario"]." AND amistad.id_usuario_2 = usuario.id_usuario
+  AND amistad.Aceptado = 0";
+   if ($pendi_nom->rowCount() >= 1) {
+    return $pendi_nom->fetchAll();
+} else {
+    return FALSE;
+ }
 }
+
 
 
 
