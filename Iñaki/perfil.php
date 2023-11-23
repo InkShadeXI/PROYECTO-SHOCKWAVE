@@ -72,7 +72,7 @@
                             echo "<p>Solicitud pendiente de aprobación</p>";
                         }
                         if($_SERVER["REQUEST_METHOD"] == "POST"){
-                            if(isset($_POST['amistad']) && $_POST['amistad']==true && $amistad->rowCount() == 0){
+                            if(isset($_POST['amistad']) && $amistad->rowCount() == 0){
                        $ins_amis = "INSERT INTO amistad (ID_USUARIO_1,ID_USUARIO_2,Aceptado) VALUES (".$_SESSION['usuario']["id_usuario"].",".$_SESSION['Other']["id_usuario"].", 0)";
                        $acept = $bd->prepare($ins_amis);
                        $acept->execute();
