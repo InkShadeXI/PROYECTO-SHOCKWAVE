@@ -1,12 +1,13 @@
 <?php
  session_start();
+require 'config.php';
  echo "<a href=perfil.php>Volver al perfil</a>";
+
+
 function comprobar_usuario($nombre){
-    $cadena_conexion = 'mysql:dbname=redsocial;host=127.0.0.1';
-    $base = 'root';
-    $clave = '';
-   // $res = leer_config(dirname(__FILE__)."/configuracion.json", dirname(__FILE__)."/configuracion.json");
-    $bd = new PDO($cadena_conexion, $base, $clave);
+    
+    $res = leer_config(dirname(__FILE__)."/configuracion.json", dirname(__FILE__)."/configuracion.json");
+    $bd = new PDO($res[0], $res[1], $res[2]);
     $ins = "select nombre_usuario, contrasena_usuario, correo_usuario, usuario_admin from usuario where nombre_usuario = '$nombre'";
 
     $resul = $bd->query($ins);
@@ -19,7 +20,7 @@ function comprobar_usuario($nombre){
 use PHPMailer\PHPMailer\PHPMailer;
 
 
-$_SESSION['USUARIO'];
+//$_SESSION['usuario'];
 require "vendor/autoload.php";
 $mail = new PHPMailer();
 $mail->IsSMTP();
@@ -29,10 +30,8 @@ $mail->Host       = "localhost";
 $mail->Port       = 1025;   
 $origen = "servidor@destino.com";  
 
-$cadena_conexion = 'mysql:dbname=redsocial;host=127.0.0.1';
-$base = 'root';
-$clave = '';
-$bd = new PDO($cadena_conexion, $base, $clave);
+$res = leer_config(dirname(__FILE__)."/configuracion.json", dirname(__FILE__)."/configuracion.json");
+	$bd = new PDO($res[0], $res[1], $res[2]);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     if($_POST["nombre"] == $_SESSION['usuario']["nombre_usuario"]){
@@ -86,9 +85,10 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
         $hasdedpasswd = password_hash($saltpasswd,PASSWORD_BCRYPT);
         return $hasdedpasswd; 
     }
-      $ins = "INSERT INTO usuario (`NOMBRE_USUARIO`, `CORREO_USUARIO`, `CONTRASENA_USUARIO`, `USUARIO_ADMIN`) VALUES ('$nombre','$correo','".comprobar_contraseña($passwd)."',1)";
+      $ins = "INSERT INTO usuario (`NOMBRE_USUARIO`, `CORREO_USUARIO`, `CONTRASENA_USUARIO`, `USUARIO_ADMIN`) VALUES ('$nombre','$correo','".comprobar_contraseña($passwd)."',0)";
 
       $resul = $bd->query($ins);
+      header("Location:login.php");
     if($resul->rowCount() === 1){		
         return $resul->fetch();		
     }else{
@@ -102,23 +102,30 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
   if(isset($_GET['camb_nom']) && !empty($_GET['camb_nom'])){
     $camb_nom = $_GET['camb_nom'];
     $nom_ant = $_SESSION['usuario']['nombre_usuario'];
-    
-    $ins = "UPDATE `usuario` SET `NOMBRE_USUARIO`='$camb_nom' WHERE nombre_usuario = '$nom_ant'";
-    $resul = $bd->query($ins);
-    header("Location: login.php");
-        if($resul->rowCount() === 1){		
-            return $resul->fetch();		
-        }else{
-            return FALSE;
-        }
 
-    }
-    if(isset($_GET['camb_cont']) && !empty($_GET['camb_cont'])){
+    $nom_exist = "SELECT nombre_usuario FROM usuario WHERE nombre_usuario = '$camb_nom'";
+    $noms = $bd->query($nom_exist);
+    if($noms->rowCount() === 1){
+        header("Location: perfil.php?usu=".$_SESSION['usuario']['nombre_usuario']."");
+    }else{
+        $ins = "UPDATE `usuario` SET `NOMBRE_USUARIO`='$camb_nom' WHERE nombre_usuario = '$nom_ant'";
+        $resul = $bd->query($ins);
+        if ($resul->rowCount() === 1) {
+            header("Location: login.php");
+        } else {
+            echo "No users found";
+        }
+     }
+    } 
+
+
+
+ if(isset($_GET['camb_cont']) && !empty($_GET['camb_cont'])){
         $nuev_cont = $_GET['camb_cont'];
         $correo = $_SESSION['usuario']['correo_usuario'];
         $nombre = $_SESSION['usuario']['nombre_usuario'];
  
-         $asunto="Correo de confirmación de cambio de contraseña";
+        $asunto="Correo de confirmación de cambio de contraseña";
          $cuerpo="Para confirmar el cambio de contraseña <a href=http://localhost/Proyecto/BBDD.php?nombre=$nombre&nuev_cont=$nuev_cont >Haz click en este enlace</a>";          
          $mail ->SetFrom($origen);
          $mail->Subject = "Correo de confirmación de cambio de contraseña";
@@ -157,5 +164,48 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
                 return FALSE;
             }
     }
+
+
+    if(isset($_GET['borrar'])){
+        $correo = $_SESSION['usuario']['correo_usuario'];
+        $nam = $_SESSION['usuario']["nombre_usuario"];
+        $confrim = true;
+
+ 
+         $asunto="Seguro que quiere borrar la cuenta";
+         $cuerpo="Para confirmar el borrar de cuenta <a href=http://localhost/Proyecto/BBDD.php?br=$nam&confrim=true >Haz click en este enlace</a>";          
+         $mail ->SetFrom($origen);
+         $mail->Subject =  $asunto;
+         $mail->MsgHTML($cuerpo);
+         $mail->AddAddress($correo,);
+     
+        header("Location: registro_usuario.php");
+     
+         $resul = $mail->Send();
+         if(!$resul) {
+         echo "Error" . $mail->ErrorInfo;
+         } else {
+         echo "Enviado";
+         }
+ 
+ 
+     }
+
+
+     if($_GET['confrim'] == true){
+      $nam = $_GET['br'];
+
+ $delete= "DELETE FROM usuario WHERE nombre_usuario = '$nam' ";
+
+ $resul = $bd->query($delete);
+        if($resul->rowCount() === 1){		
+            return $resul->fetch();		
+        }else{
+            return FALSE;
+        }
+        header("Location: registro_usuario.php");
+     }
+     
 }
 ?>
+
